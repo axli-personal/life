@@ -1,13 +1,12 @@
 package cn.axlis.controller;
 
-import cn.axlis.entity.HealthData;
-import cn.axlis.entity.TrainingItem;
-import cn.axlis.entity.TrainingNote;
-import cn.axlis.entity.TrainingPlan;
+import cn.axlis.entity.*;
 import cn.axlis.model.AddTrainingNoteReq;
 import cn.axlis.model.AddTrainingPlanReq;
 import cn.axlis.model.CollectHealthDataReq;
+import cn.axlis.model.ListSportsReq;
 import cn.axlis.store.HealthDataStore;
+import cn.axlis.store.SportStore;
 import cn.axlis.store.TrainingNoteStore;
 import cn.axlis.store.TrainingPlanStore;
 import lombok.AllArgsConstructor;
@@ -21,6 +20,8 @@ import java.util.List;
 @AllArgsConstructor
 public class Training {
     private final HealthDataStore healthDataStore;
+
+    private final SportStore sportStore;
 
     private final TrainingNoteStore trainingNoteStore;
 
@@ -36,6 +37,11 @@ public class Training {
         entity.setCollectTime(req.getCollectTime());
 
         healthDataStore.insert(entity);
+    }
+
+    @PostMapping("/sport/list")
+    public List<Sport> listSports(@RequestBody ListSportsReq req) {
+        return sportStore.findAll();
     }
 
     @PostMapping("/training/note")
