@@ -9,6 +9,8 @@ import cn.axlis.store.TrainingNoteStore;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @CrossOrigin
 @AllArgsConstructor
@@ -29,8 +31,8 @@ public class Training {
         healthDataStore.insert(entity);
     }
 
-    @PostMapping("/training-record/note")
-    public void addTrainingNoteRecord(@RequestBody AddTrainingNoteReq req) {
+    @PostMapping("/training/note")
+    public void addTrainingNote(@RequestBody AddTrainingNoteReq req) {
         var entity = new TrainingNote();
 
         entity.setSport(req.getSport());
@@ -40,5 +42,10 @@ public class Training {
         entity.setComment(req.getComment());
 
         trainingNoteStore.insert(entity);
+    }
+
+    @PostMapping("/training/note/list")
+    public List<TrainingNote> listTrainingNotes() {
+        return trainingNoteStore.findAll();
     }
 }
