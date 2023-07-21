@@ -1,14 +1,19 @@
 package cn.axlis.controller;
 
 import cn.axlis.entity.HealthData;
+import cn.axlis.entity.TrainingItem;
 import cn.axlis.entity.TrainingNote;
+import cn.axlis.entity.TrainingPlan;
 import cn.axlis.model.AddTrainingNoteReq;
+import cn.axlis.model.AddTrainingPlanReq;
 import cn.axlis.model.CollectHealthDataReq;
 import cn.axlis.store.HealthDataStore;
 import cn.axlis.store.TrainingNoteStore;
+import cn.axlis.store.TrainingPlanStore;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -18,6 +23,8 @@ public class Training {
     private final HealthDataStore healthDataStore;
 
     private final TrainingNoteStore trainingNoteStore;
+
+    private final TrainingPlanStore trainingPlanStore;
 
     @PostMapping("/health-data/{type}")
     public void collectHealthData(@PathVariable String type, @RequestBody CollectHealthDataReq req) {
@@ -47,5 +54,28 @@ public class Training {
     @PostMapping("/training/note/list")
     public List<TrainingNote> listTrainingNotes() {
         return trainingNoteStore.findAll();
+    }
+
+    @PostMapping("/training/plan")
+    public void addTrainingPlan(@RequestBody AddTrainingPlanReq req) {
+        var entity = new TrainingPlan();
+
+        List<TrainingItem> trainingItems = new ArrayList<>();
+
+        for (var item : req.getPlan()) {
+            var trainingItem = new TrainingItem();
+
+            trainingItem.setAmount(item.getAmount());
+            trainingItem.setUnit(item.getUnit());
+            trainingItem.setSport(item.getSport());
+            trainingItem.setGroupCount(item.getGroupCount());
+            trainingItem.setStatus("TODO");
+
+            trainingItems.add(trainingItem);
+        }
+
+        entity.setPlan(trainingItems);
+
+        trainingPlanStore.insert(entity);
     }
 }
